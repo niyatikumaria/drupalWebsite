@@ -1,0 +1,9 @@
+access customer feedback submissions:
+  title: 'Access customer feedback submissions'
+  description: 'Allow users to view and manage customer feedback submissions.'
+  restrict access: true
+
+administer customer feedback:
+  title: 'Administer customer feedback'
+  description: 'Full administrative access to customer feedback configuration, fields, and permissions.'
+  restrict access: true

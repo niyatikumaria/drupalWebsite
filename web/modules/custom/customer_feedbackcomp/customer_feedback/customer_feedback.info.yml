@@ -1,0 +1,8 @@
+name: Customer Feedback
+type: module
+description: "Manages customer feedback submissions."
+core_version_requirement: ^9 || ^11
+package: Custom
+dependencies:
+  - drupal:node
+  - drupal:user

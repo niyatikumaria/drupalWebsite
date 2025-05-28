@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the customer_feedback module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function customer_feedback_install() {
+  // Ensure the entity schema is created on fresh install.
+  \Drupal::entityDefinitionUpdateManager()
+    ->installEntityType(\Drupal::entityTypeManager()->getDefinition('customer_feedback'));
+}
+
+/**
+ * Implements hook_update_N().
+ *
+ * Use this if the entity type wasn't installed correctly initially.
+ */
+function customer_feedback_update_8101() {
+  \Drupal::entityDefinitionUpdateManager()
+    ->installEntityType(\Drupal::entityTypeManager()->getDefinition('customer_feedback'));
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function customer_feedback_uninstall() {
+  // Remove the entity type schema when the module is uninstalled.
+  \Drupal::entityDefinitionUpdateManager()
+    ->uninstallEntityType(\Drupal::entityTypeManager()->getDefinition('customer_feedback'));
+}
