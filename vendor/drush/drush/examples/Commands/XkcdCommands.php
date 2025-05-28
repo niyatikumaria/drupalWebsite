@@ -27,7 +27,7 @@ class XkcdCommands extends DrushCommands
     #[CLI\Usage(name: 'drush xkcd sandwich', description: 'Retrieve and display cartoons about sandwiches.')]
     #[CLI\Usage(name: 'drush xkcd 123 --image-viewer=eog', description: 'Retrieve and display cartoon #123 in eog.')]
     #[CLI\Usage(name: 'drush xkcd random --image-viewer=firefox', description: 'Retrieve and display a random cartoon in Firefox.')]
-    public function fetch($search = null, $options = ['image-viewer' => 'open', 'google-custom-search-api-key' => 'AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek'])
+    public function fetch($search = null, $options = ['image-viewer' => 'open', 'google-custom-search-api-key' => ''])
     {
         $this->doFetch($search, $options);
     }
