@@ -1,0 +1,29 @@
+# Define the chartjs library that loads Chart.js from CDN
+chartjs:
+  version: 1.x
+  js:
+    https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js: { type: external, minified: true }
+    
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - core/once
+
+# Define your custom JavaScript behavior
+graph_input:
+  version: 1.x
+  js:
+    js/graph.js: {}
+  dependencies:
+    - graph_input/chartjs  # Depends on our chartjs library
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+
+# Optional: If you want to add CSS styling to your chart container
+chart_styles:
+  version: 1.x
+  css:
+    component:
+      css/graph.css: {}

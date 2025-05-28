@@ -1,0 +1,28 @@
+# English, British translation of Metatag (2.1.0)
+# Copyright (c) 2024 by the English, British translation team
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Metatag (2.1.0)\n"
+"POT-Creation-Date: 2024-11-07 18:46+0000\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Language-Team: English, British\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+msgid "Content"
+msgstr "Content"
+msgid "Description"
+msgstr "Description"
+msgid "Link"
+msgstr "Link"
+msgid "Name"
+msgstr "Name"
+msgid "Label"
+msgstr "Label"
+msgid "ID"
+msgstr "ID"
+msgid "About"
+msgstr "About"

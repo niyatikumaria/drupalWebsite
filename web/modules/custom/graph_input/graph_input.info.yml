@@ -1,0 +1,7 @@
+name: 'Graph Input'
+type: module
+description: 'A module to take user input and display Chart.js graph.'
+core_version_requirement: ^11
+package: Custom
+
+

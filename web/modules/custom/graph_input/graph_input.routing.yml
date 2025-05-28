@@ -1,0 +1,8 @@
+graph_input.form:
+  path: '/graph-input'
+  defaults:
+    _form: '\Drupal\graph_input\Form\GraphInputForm'
+    _title: 'Graph Input'
+  requirements:
+    _permission: 'access content'
+
