@@ -24,6 +24,7 @@
         "drupal/core-recommended": "^11.1",
         "drupal/metatag": "^2.1",
         "drupal/radix": "^6.0",
+        "drupal/smtp": "^1.4",
         "drupal/zuvi": "^11.0"
     },
     "conflict": {

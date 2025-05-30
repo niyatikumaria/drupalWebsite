@@ -1,0 +1,31 @@
+[90m= [39m[
+    "[34mSMTPMailSystem[39m" => [
+      "[34mid[39m" => "[32mSMTPMailSystem[39m",
+      "[34mlabel[39m" => [34;4mDrupal\Core\StringTranslation\TranslatableMarkup[39;24m {#8344},
+      "[34mdescription[39m" => [34;4mDrupal\Core\StringTranslation\TranslatableMarkup[39;24m {#8336},
+      "[34mclass[39m" => "[32mDrupal\smtp\Plugin\Mail\SMTPMailSystem[39m",
+      "[34mprovider[39m" => "[32msmtp[39m",
+    ],
+    "[34msymfony_mailer[39m" => [
+      "[34mclass[39m" => "[32mDrupal\Core\Mail\Plugin\Mail\SymfonyMailer[39m",
+      "[34mprovider[39m" => "[32mcore[39m",
+      "[34mid[39m" => "[32msymfony_mailer[39m",
+      "[34mlabel[39m" => [34;4mDrupal\Core\StringTranslation\TranslatableMarkup[39;24m {#8448},
+      "[34mdescription[39m" => [36mnull[39m,
+    ],
+    "[34mtest_mail_collector[39m" => [
+      "[34mclass[39m" => "[32mDrupal\Core\Mail\Plugin\Mail\TestMailCollector[39m",
+      "[34mprovider[39m" => "[32mcore[39m",
+      "[34mid[39m" => "[32mtest_mail_collector[39m",
+      "[34mlabel[39m" => [34;4mDrupal\Core\StringTranslation\TranslatableMarkup[39;24m {#8449},
+      "[34mdescription[39m" => [34;4mDrupal\Core\StringTranslation\TranslatableMarkup[39;24m {#8450},
+    ],
+    "[34mphp_mail[39m" => [
+      "[34mclass[39m" => "[32mDrupal\Core\Mail\Plugin\Mail\PhpMail[39m",
+      "[34mprovider[39m" => "[32mcore[39m",
+      "[34mid[39m" => "[32mphp_mail[39m",
+      "[34mlabel[39m" => [34;4mDrupal\Core\StringTranslation\TranslatableMarkup[39;24m {#8451},
+      "[34mdescription[39m" => [34;4mDrupal\Core\StringTranslation\TranslatableMarkup[39;24m {#8452},
+    ],
+  ]
+

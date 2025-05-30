@@ -1,0 +1,114 @@
+<?php
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Mail\MailFormatHelper;
+use Drupal\Core\Url;
+
+/**
+ * Implements hook_entity_insert().
+ */
+function customer_feedback_entity_insert(EntityInterface $entity) {
+  if ($entity->getEntityTypeId() !== 'customer_feedback') {
+    return;
+  }
+
+  // Email to send notification to.
+  $to = 'admin1@gmail.com';
+
+  // Site language.
+  $langcode = \Drupal::languageManager()->getDefaultLanguage()->getId();
+
+  $module = 'customer_feedback';
+  $key = 'new_feedback_notification';
+
+  // Build approval link — will redirect to login if not logged in.
+  $approval_url = Url::fromUri('internal:/user/login', [
+  'query' => ['destination' => 'admin/content/customer-feedback'],
+  'absolute' => TRUE,
+])->toString();
+
+  $params = [
+    'subject' => t('New Customer Feedback Submitted'),
+    'message' => t("A new feedback entry has been submitted.\n\nReview it here: @link", ['@link' => $approval_url]),
+  ];
+
+  // Send the email.
+  \Drupal::service('plugin.manager.mail')->mail($module, $key, $to, $langcode, $params);
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function customer_feedback_entity_update(EntityInterface $entity) {
+  if ($entity->getEntityTypeId() !== 'customer_feedback') {
+    return;
+  }
+
+  $original = \Drupal::entityTypeManager()
+    ->getStorage('customer_feedback')
+    ->loadUnchanged($entity->id());
+
+  $old_status = $original ? $original->get('status')->value : NULL;
+  $new_status = $entity->get('status')->value;
+
+  if ($old_status !== $new_status && in_array($new_status, ['approved', 'rejected'])) {
+    $mailManager = \Drupal::service('plugin.manager.mail');
+    $module = 'customer_feedback';
+    $key = 'status_update';
+    $to = $entity->get('email')->value;
+    $langcode = \Drupal::languageManager()->getDefaultLanguage()->getId();
+
+    $params = [
+      'subject' => '',
+      'message' => '',
+    ];
+
+    if ($new_status === 'approved') {
+      $params['subject'] = t('Your feedback has been approved');
+      $params['message'] = t('Hello @name, your feedback has been approved. Thank you for your submission!', [
+        '@name' => $entity->get('name')->value,
+      ]);
+    }
+    else {
+      $params['subject'] = t('Your feedback has been rejected');
+      $params['message'] = t('Hello @name, your feedback has been rejected. Thank you for your submission!', [
+        '@name' => $entity->get('name')->value,
+      ]);
+    }
+
+    $params['entity'] = $entity;
+
+    $result = $mailManager->mail($module, $key, $to, $langcode, $params);
+
+    if ($result['result'] !== TRUE) {
+      \Drupal::logger('customer_feedback')->error('There was a problem sending email to %email for feedback %id', [
+        '%email' => $to,
+        '%id' => $entity->id(),
+      ]);
+    }
+    else {
+      \Drupal::logger('customer_feedback')->notice('Sent status update email to %email for feedback %id', [
+        '%email' => $to,
+        '%id' => $entity->id(),
+      ]);
+    }
+  }
+}
+
+/**
+ * Implements hook_mail().
+ */
+function customer_feedback_mail($key, &$message, $params) {
+  switch ($key) {
+    case 'status_update':
+      $message['subject'] = $params['subject'];
+      $message['body'][] = MailFormatHelper::htmlToText($params['message']);
+      $message['body'][] = t('Thank you for your feedback submission.');
+      break;
+
+    case 'new_feedback_notification':
+      $message['subject'] = $params['subject'];
+      $message['body'][] = MailFormatHelper::htmlToText($params['message']);
+      break;
+  }
+}

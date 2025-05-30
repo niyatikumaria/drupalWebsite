@@ -1,0 +1,3 @@
+field.feedback_type:
+  type: string
+  label: 'Feedback Type'
