@@ -1,0 +1,4 @@
+services:
+  news.scheduled_visibility:
+    class: Drupal\news\Service\NewsVisibilityService
+    arguments: ['@entity_type.manager']

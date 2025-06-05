@@ -1,0 +1,20 @@
+news.list:
+  path: '/news'
+  defaults:
+    _controller: '\Drupal\news\Controller\NewsController::list'
+    _title: 'Latest News'
+  requirements:
+    _permission: 'access content'
+
+news.detail:
+  path: '/news/{nid}'
+  defaults:
+    _controller: '\Drupal\news\Controller\NewsController::detail'
+    _title: 'News Detail'
+  requirements:
+    _permission: 'access content'
+    nid: '\d+'
+
+
+
+

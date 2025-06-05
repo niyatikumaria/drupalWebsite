@@ -1,0 +1,10 @@
+name: News
+type: module
+description: 'Custom module to manage and display news with scheduled visibility.'
+core_version_requirement: ^11
+package: Custom
+dependencies:
+  - node
+  - field
+  - image
+  - taxonomy

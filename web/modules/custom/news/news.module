@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function news_theme($existing, $type, $theme, $path) {
+  return [
+    'news_list' => [
+      'variables' => ['news_items' => NULL],
+      'template' => 'news-list',
+    ],
+    'news_detail' => [
+      'variables' => ['node' => NULL],
+      'template' => 'news-detail',
+    ],
+  ];
+}
