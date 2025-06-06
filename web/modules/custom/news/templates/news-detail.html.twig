@@ -1,4 +1,21 @@
 <article class="news-detail">
   <h1>{{ node.label }}</h1>
-  {{ content|raw }}
+  
+  {% if node.field_news_category.value %}
+    <div class="news-categories">
+      {% for term in node.field_news_category %}
+        <span class="category-tag">{{ term.entity.label }}</span>
+      {% endfor %}
+    </div>
+  {% endif %}
+  
+  <div class="news-meta">
+    <span class="date">{{ node.field_time.value|date("F j, Y, g:i a") }}</span>
+    <span class="author">{{ node.field_author.value }}</span>
+    <span class="place">{{ node.field_place.value }}</span>
+  </div>
+  
+  <div class="news-content">
+    {{ content|raw }}
+  </div>
 </article>

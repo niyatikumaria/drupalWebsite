@@ -6,30 +6,17 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\taxonomy\Entity\Term;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class NewsController extends ControllerBase {
 
-  /**
-   * The entity type manager.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
-   */
   protected $entityTypeManager;
 
-  /**
-   * Constructs a new NewsController.
-   *
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   *   The entity type manager.
-   */
   public function __construct(EntityTypeManagerInterface $entity_type_manager) {
     $this->entityTypeManager = $entity_type_manager;
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('entity_type.manager')
@@ -37,45 +24,28 @@ class NewsController extends ControllerBase {
   }
 
   /**
-   * Lists news articles with scheduled visibility.
-   *
-   * @return array
-   *   A render array.
+   * Shows all news articles (no categories displayed).
    */
   public function list() {
     try {
-      // Use UTC timezone for consistent comparisons
       $now = DrupalDateTime::createFromTimestamp(time(), 'UTC')->format('Y-m-d\TH:i:s');
-      
+
       $query = $this->entityTypeManager->getStorage('node')->getQuery()
         ->accessCheck(TRUE)
         ->condition('type', 'news')
-        ->condition('status', 1);
-
-      // Add date conditions only if fields exist
-      $definitions = $this->entityTypeManager->getDefinition('node')->get('field_storage_definitions');
-      
-      if (isset($definitions['field_time'])) {
-        $query->condition('field_time', $now, '<=');
-      }
-      
-      if (isset($definitions['field_end_time'])) {
-        $query->condition('field_end_time', $now, '>=');
-      }
-
-      $nids = $query
+        ->condition('status', 1)
+        ->condition('field_time', $now, '<=')
+        ->condition('field_end_time', $now, '>=')
         ->sort('field_time', 'DESC')
-        ->pager(5)
-        ->execute();
+        ->pager(10);
 
-      $nodes = Node::loadMultiple($nids);
+      $nodes = Node::loadMultiple($query->execute());
 
       return [
         '#theme' => 'news_list',
         '#news_items' => $nodes,
         '#pager' => [
           '#type' => 'pager',
-          '#quantity' => 5,
         ],
         '#cache' => [
           'tags' => ['node_list'],
@@ -84,24 +54,114 @@ class NewsController extends ControllerBase {
       ];
 
     } catch (\Exception $e) {
-      \Drupal::logger('news')->error('News listing error: @error', ['@error' => $e->getMessage()]);
+      $this->getLogger('news')->error('News listing error: @error', ['@error' => $e->getMessage()]);
       return [
         '#markup' => $this->t('Temporarily unable to load news listings.'),
-        '#cache' => [
-          'tags' => ['node_list'],
-        ],
+        '#cache' => ['tags' => ['node_list']],
       ];
     }
   }
 
   /**
-   * Displays a single news article, only if within scheduled visibility time.
-   *
-   * @param int $nid
-   *   The node ID.
-   *
-   * @return array
-   *   A render array.
+   * Shows only the category listing page.
+   */
+  public function categories() {
+    try {
+      $vocabularies = $this->entityTypeManager->getStorage('taxonomy_vocabulary')->loadMultiple();
+      if (!isset($vocabularies['news_category'])) {
+        throw new \Exception('Vocabulary "news_category" not found. Available vocabularies: ' . implode(', ', array_keys($vocabularies)));
+      }
+
+      $terms = $this->entityTypeManager->getStorage('taxonomy_term')
+        ->loadByProperties(['vid' => 'news_category']);
+
+      if (empty($terms)) {
+        throw new \Exception('No terms found in "news_category" vocabulary');
+      }
+
+      $categories = [];
+      foreach ($terms as $term) {
+        if (!$term instanceof Term) {
+          continue;
+        }
+
+        $categories[] = [
+          'id' => $term->id(),
+          'name' => $term->label(),
+          'count' => $this->getCategoryCount($term->id()),
+          'url' => $this->generateUrl('news.category_list', ['category' => $term->id()])
+        ];
+      }
+
+      if (empty($categories)) {
+        throw new \Exception('No valid categories could be processed');
+      }
+
+      return [
+        '#theme' => 'news_category',
+        '#categories' => $categories,
+        '#cache' => [
+          'tags' => ['taxonomy_term_list', 'taxonomy_vocabulary:news_category'],
+        ],
+      ];
+
+    } catch (\Exception $e) {
+      $this->getLogger('news')->error('Categories error: @error', ['@error' => $e->getMessage()]);
+      return [
+        '#markup' => $this->t('Unable to load news categories. Error details have been logged.'),
+        '#cache' => ['tags' => ['taxonomy_term_list']],
+      ];
+    }
+  }
+
+  /**
+   * Shows news for a specific category.
+   */
+  public function categoryList($category) {
+    try {
+      $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($category);
+      if (!$term) {
+        throw new \Exception('Invalid category ID: ' . $category);
+      }
+
+      $now = DrupalDateTime::createFromTimestamp(time(), 'UTC')->format('Y-m-d\TH:i:s');
+
+      $query = $this->entityTypeManager->getStorage('node')->getQuery()
+        ->accessCheck(TRUE)
+        ->condition('type', 'news')
+        ->condition('status', 1)
+        ->condition('field_category', $category)
+        ->condition('field_time', $now, '<=')
+        ->condition('field_end_time', $now, '>=')
+        ->sort('field_time', 'DESC')
+        ->pager(10);
+
+      $nodes = Node::loadMultiple($query->execute());
+
+      return [
+        '#theme' => 'news_category_list',
+        '#news_items' => $nodes,
+        '#category' => $term->label(),
+        '#pager' => [
+          '#type' => 'pager',
+        ],
+        '#cache' => [
+          'tags' => ['node_list', 'taxonomy_term:' . $category],
+          'contexts' => ['timezone', 'url'],
+        ],
+      ];
+
+    } catch (\Exception $e) {
+      $this->getLogger('news')->error('Category news error: @error', ['@error' => $e->getMessage()]);
+      return [
+        '#markup' => $this->t('Unable to load news for this category.'),
+        '#cache' => ['tags' => ['node_list']],
+      ];
+    }
+  }
+
+  /**
+   * Displays a single news article.
    */
   public function detail($nid) {
     try {
@@ -111,17 +171,14 @@ class NewsController extends ControllerBase {
         throw new \Exception('News node not found');
       }
 
-      // Use UTC timezone for consistent comparisons
       $now = DrupalDateTime::createFromTimestamp(time(), 'UTC')->format('Y-m-d\TH:i:s');
       $start = $node->get('field_time')->value;
       $end = $node->get('field_end_time')->value;
 
-      // Validate date fields exist
       if (empty($start) || empty($end)) {
         throw new \Exception('Missing date fields');
       }
 
-      // Check visibility window
       if ($start <= $now && $now <= $end) {
         $view_builder = $this->entityTypeManager->getViewBuilder('node');
         $build = $view_builder->view($node, 'full');
@@ -139,13 +196,37 @@ class NewsController extends ControllerBase {
       ];
 
     } catch (\Exception $e) {
-      \Drupal::logger('news')->error('News detail error: @error', ['@error' => $e->getMessage()]);
+      $this->getLogger('news')->error('News detail error: @error', ['@error' => $e->getMessage()]);
       return [
         '#markup' => $this->t('News not available.'),
-        '#cache' => [
-          'tags' => ['node_list'],
-        ],
+        '#cache' => ['tags' => ['node_list']],
       ];
     }
   }
+
+  /**
+   * Gets count of published news in a category.
+   */
+  protected function getCategoryCount($tid) {
+    $now = DrupalDateTime::createFromTimestamp(time(), 'UTC')->format('Y-m-d\TH:i:s');
+
+    $query = $this->entityTypeManager->getStorage('node')->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('type', 'news')
+      ->condition('status', 1)
+      ->condition('field_category', $tid)
+      ->condition('field_time', $now, '<=')
+      ->condition('field_end_time', $now, '>=')
+      ->count();
+
+    return $query->execute();
+  }
+
+  /**
+   * Generates a URL for a route with parameters.
+   */
+  protected function generateUrl($route_name, $parameters = []) {
+    return \Drupal::urlGenerator()->generateFromRoute($route_name, $parameters);
+  }
+
 }

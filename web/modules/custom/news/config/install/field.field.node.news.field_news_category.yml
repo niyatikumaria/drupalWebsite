@@ -1,0 +1,23 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_news_category
+    - node.type.news
+    - taxonomy.vocabulary.news_categories
+id: node.news.field_news_category
+field_name: field_news_category
+entity_type: node
+bundle: news
+label: 'Categories'
+description: 'Assign this news article to categories'
+required: false
+translatable: false
+default_value: {  }
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      news_categories: news_categories
+    auto_create: false
+field_type: entity_reference

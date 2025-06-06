@@ -1,0 +1,17 @@
+<div class="news-categories">
+  <h1>News Categories</h1>
+  
+  {% if categories %}
+    <ul class="category-list">
+      {% for category in categories %}
+        <li>
+          <a href="{{ path('news.category_list', {'category': category.id}) }}">
+            {{ category.name }} ({{ category.count }})
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No categories found.</p>
+  {% endif %}
+</div>

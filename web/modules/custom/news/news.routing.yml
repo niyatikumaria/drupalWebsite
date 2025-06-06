@@ -15,6 +15,19 @@ news.detail:
     _permission: 'access content'
     nid: '\d+'
 
+news.categories:
+  path: '/news/categories'
+  defaults:
+    _controller: '\Drupal\news\Controller\NewsController::categories'
+    _title: 'News Categories'
+  requirements:
+    _permission: 'access content'
 
-
-
+news.category_list:
+  path: '/news/category/{category}'
+  defaults:
+    _controller: '\Drupal\news\Controller\NewsController::categoryList'
+    _title: 'News'
+  requirements:
+    _permission: 'access content'
+    category: '\d+'

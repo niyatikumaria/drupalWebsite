@@ -1,0 +1,50 @@
+<div class="news-category-listing">
+  <header class="news-category-header">
+    <h1 class="news-category-title">News in "{{ category }}"</h1>
+    <a href="{{ path('news.categories') }}" class="back-to-categories btn btn-outline-secondary">
+      <i class="fas fa-arrow-left"></i> Back to All Categories
+    </a>
+  </header>
+  
+  {% if news_items %}
+    <div class="news-grid row">
+      {% for node in news_items %}
+        <div class="col-md-6 col-lg-4 mb-4">
+          <article class="news-teaser card h-100">
+            {% if node.field_image.value %}
+              <img src="{{ file_url(node.field_image.entity.fileuri) }}" 
+                   alt="{{ node.field_image.alt }}" 
+                   class="card-img-top">
+            {% endif %}
+            <div class="card-body">
+              <h2 class="card-title h4">{{ node.label }}</h2>
+              <div class="news-meta text-muted small mb-2">
+                <span class="date"><i class="far fa-calendar-alt mr-1"></i>{{ node.field_time.value|date('F j, Y') }}</span>
+                {% if node.field_place.value %}
+                  <span class="location ml-3"><i class="fas fa-map-marker-alt mr-1"></i>{{ node.field_place.value }}</span>
+                {% endif %}
+              </div>
+              {% if node.field_summary.value %}
+                <p class="card-text">{{ node.field_summary.value|striptags|trim }}</p>
+              {% endif %}
+              <a href="{{ path('entity.node.canonical', {'node': node.id}) }}" 
+                 class="read-more btn btn-primary">
+                Read More <i class="fas fa-chevron-right ml-1"></i>
+              </a>
+            </div>
+          </article>
+        </div>
+      {% endfor %}
+    </div>
+    
+    {% if pager %}
+      <nav class="news-pager mt-5" aria-label="News pagination">
+        {{ pager }}
+      </nav>
+    {% endif %}
+  {% else %}
+    <div class="alert alert-info">
+      <i class="fas fa-info-circle mr-2"></i> No news articles found in this category.
+    </div>
+  {% endif %}
+</div>

@@ -1,18 +1,29 @@
 <div class="news-list">
-  {% if news_items %}
-    <ul>
-      {% for node in news_items %}
-        <li>
-          <a href="{{ path('news.detail', {'nid': node.id}) }}">
-            {{ node.label }}
-          </a>
-          <div>{{ node.field_time.value|date("F j, Y, g:i a") }}</div>
-          <div>{{ node.field_place.value }}</div>
-        </li>
-      {% endfor %}
-    </ul>
-    {{ pager }}
-  {% else %}
-    <p>No news available at the moment.</p>
-  {% endif %}
+  <div class="news-items">
+    {% if news_items %}
+      <ul>
+        {% for node in news_items %}
+          <li>
+            <a href="{{ path('news.detail', {'nid': node.id}) }}">
+              {{ node.label }}
+            </a>
+            <div class="news-meta">
+              <span class="date">{{ node.field_time.value|date("F j, Y, g:i a") }}</span>
+              <span class="place">{{ node.field_place.value }}</span>
+              {% if node.field_news_category.value %}
+                <span class="categories">
+                  {% for term in node.field_news_category %}
+                    <span class="category-tag">{{ term.entity.label }}</span>
+                  {% endfor %}
+                </span>
+              {% endif %}
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+      {{ pager }}
+    {% else %}
+      <p>No news available in this category.</p>
+    {% endif %}
+  </div>
 </div>

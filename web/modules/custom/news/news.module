@@ -1,17 +1,45 @@
 <?php
 
 /**
+ * @file
+ * Contains hook implementations for the News module.
+ */
+
+/**
  * Implements hook_theme().
  */
 function news_theme($existing, $type, $theme, $path) {
   return [
     'news_list' => [
-      'variables' => ['news_items' => NULL],
+      'variables' => [
+        'news_items' => NULL, 
+        'categories' => NULL,
+        'current_category' => NULL,
+        'pager' => NULL,
+      ],
       'template' => 'news-list',
     ],
+    'news_category' => [ // ✅ Fixed to match controller
+      'variables' => [
+        'categories' => [],
+      ],
+      'template' => 'news-categories',
+    ],
+    'news_category_list' => [
+      'variables' => [
+        'news_items' => NULL,
+        'category' => NULL,
+        'pager' => NULL,
+      ],
+      'template' => 'news-category-list',
+    ],
     'news_detail' => [
-      'variables' => ['node' => NULL],
+      'variables' => [
+        'node' => NULL, 
+        'content' => NULL,
+      ],
       'template' => 'news-detail',
     ],
   ];
 }
+
