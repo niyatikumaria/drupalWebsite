@@ -31,3 +31,11 @@ news.category_list:
   requirements:
     _permission: 'access content'
     category: '\d+'
+
+news.import_form:
+  path: '/admin/content/news/import'
+  defaults:
+    _form: '\Drupal\news\Form\NewsImportForm'
+    _title: 'Import News'
+  requirements:
+    _permission: 'create news content'

@@ -43,3 +43,15 @@ function news_theme($existing, $type, $theme, $path) {
   ];
 }
 
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function news_menu_local_tasks_alter(&$local_tasks) {
+  $local_tasks['entity.node.add_form']['news.import'] = [
+    '#theme' => 'menu_local_task',
+    '#link' => [
+      'title' => t('Import News'),
+      'url' => \Drupal\Core\Url::fromRoute('news.import_form'),
+    ],
+  ];
+}

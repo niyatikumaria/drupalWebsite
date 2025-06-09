@@ -2,3 +2,7 @@ services:
   news.scheduled_visibility:
     class: Drupal\news\Service\NewsVisibilityService
     arguments: ['@entity_type.manager']
+
+  news.import_service:
+    class: Drupal\news\Form\NewsImportForm
+    arguments: ['@file_system', '@entity_type.manager', '@messenger']
