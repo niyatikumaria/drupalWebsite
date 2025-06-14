@@ -1,0 +1,36 @@
+/* Center the carousel and limit its size */
+#homepageCarousel {
+  max-width: 800px;
+  height: 400px;
+  margin: auto;
+  position: relative; /* Needed for absolute children */
+  overflow: hidden;
+}
+
+/* Resize images */
+#homepageCarousel .carousel-item img {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+/* Control button adjustments */
+#homepageCarousel .carousel-control-prev,
+#homepageCarousel .carousel-control-next {
+  width: 40px;
+  height: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.3); /* Optional background for visibility */
+  border-radius: 50%;
+  position: absolute;
+  z-index: 1;
+}
+
+/* Make sure the icon is smaller */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 20px;
+  height: 20px;
+  background-size: 100% 100%;
+}

@@ -1,0 +1,5 @@
+name: My Carousel
+type: module
+description: 'Provides a Bootstrap carousel block.'
+core_version_requirement: ^11
+package: Custom
