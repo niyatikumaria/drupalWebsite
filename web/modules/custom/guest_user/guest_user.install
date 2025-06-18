@@ -1,0 +1,43 @@
+<?php
+
+/**
+ * @file
+ * Install file for guest_user module.
+ */
+
+use Drupal\Core\Database\Schema;
+
+/**
+ * Implements hook_schema().
+ */
+function guest_user_schema() {
+  $schema['guest_user'] = [
+    'description' => 'Table for storing guest user info.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+      'email' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'unique' => TRUE,
+      ],
+      'is_verified' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+    ],
+    'primary key' => ['id'],
+  ];
+
+  return $schema;
+}

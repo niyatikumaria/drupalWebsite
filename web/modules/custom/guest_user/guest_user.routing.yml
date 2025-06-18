@@ -1,0 +1,32 @@
+guest_user.signup:
+  path: '/guest/signup'
+  defaults:
+    _form: '\Drupal\guest_user\Form\GuestSignupForm'
+    _title: 'Guest Signup'
+  requirements:
+    _access: 'TRUE'
+
+guest_user.login:
+  path: '/guest/login'
+  defaults:
+    _form: '\Drupal\guest_user\Form\GuestLoginForm'
+    _title: 'Guest Login'
+  requirements:
+    _access: 'TRUE'
+
+
+guest_user.admin_page:
+  path: '/admin/guest-users'
+  defaults:
+    _controller: '\Drupal\guest_user\Controller\GuestUserController::adminPage'
+    _title: 'Manage Guest Users'
+  requirements:
+    _permission: 'administer site configuration'
+
+
+guest_user.toggle_verify:
+  path: '/admin/guest-users/toggle/{id}'
+  defaults:
+    _controller: '\Drupal\guest_user\Controller\GuestUserController::toggleVerify'
+  requirements:
+    _permission: 'administer site configuration'

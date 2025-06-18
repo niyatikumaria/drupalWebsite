@@ -1,0 +1,7 @@
+name: 'Guest User'
+type: module
+description: 'Allows guest users to sign up and log in after admin approval.'
+core_version_requirement: ^11
+package: Custom
+dependencies:
+  - drupal:user
